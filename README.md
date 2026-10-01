@@ -80,18 +80,8 @@ kpackagetool6 -t Plasma/Applet -i ch.secanis.amdgpumonitor-X.Y.Z.plasmoid
 ### Releasing
 
 1. Update `CHANGELOG.md` and bump `KPlugin.Version` in `package/metadata.json`.
-2. Commit, then tag `vX.Y.Z` (must match the version) and push the tag. CI builds the archive
-   and creates the GitHub release with it attached.
-
-### Publishing under a different account
-
-The package id, author and website in `package/metadata.json` are the only places that name the
-publisher; nothing in the widget refers to the git hosting. To publish from a fresh repository
-with a single clean commit, create an orphan branch and push that instead of this history:
-
-```sh
-git checkout --orphan release && git commit -m "AMD GPU Monitor X.Y.Z" && git push <remote> release:main
-```
+2. Commit to `main`, then tag `vX.Y.Z` (must match the version) and push the tag. CI builds the
+   archive and creates the GitHub release with it attached.
 
 Configuration options live in `package/contents/config/main.xml`; the settings UI is
 `package/contents/ui/config/ConfigGeneral.qml`. See `PLAN.md` for the roadmap.

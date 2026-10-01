@@ -94,8 +94,8 @@ package/                        the plasmoid (what gets installed)
       and by CI, plain-CMake install target (no ECM needed, validated locally and in CI), release
       job exercised with a test tag on the private development repository.
 - [x] **Publication** (2026-10-01): published as **0.1.0** from a single clean commit to
-      `github.com/secanis/kde-widget-amd-gpu` (public); the development history stays in the
-      private repository. KDE Store remains a separate decision.
+      `github.com/secanis/kde-widget-amd-gpu` (public), which is now the only repository.
+      KDE Store remains a separate decision.
 
 ## Testing approach
 
