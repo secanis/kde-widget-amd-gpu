@@ -14,7 +14,6 @@
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
-pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 
@@ -31,9 +30,10 @@ MouseArea {
     property bool showVram: true
     property bool showTemperature: false
     property bool vramAsPercent: false
-    property color usageColor: Kirigami.Theme.highlightColor
-    property color vramColor: Kirigami.Theme.positiveTextColor
-    property color temperatureColor: Kirigami.Theme.neutralTextColor
+    property bool customColors: false
+    property string customUsageColor: ""
+    property string customVramColor: ""
+    property string customTemperatureColor: ""
 
     signal activated()
 
@@ -97,11 +97,16 @@ MouseArea {
         return ""
     }
 
+    // Resolved in a function, not as colour properties on this root item:
+    // `property color x: Kirigami.Theme.<colour>` declarations on the applet or
+    // compact root crashed plasmashell at startup (Kirigami's Plasma style syncs
+    // colours while the shell reparents the item). Functions read the theme the
+    // same way the first working version did.
     function colorFor(key) {
         switch (key) {
-        case "usage": return usageColor
-        case "vram":  return vramColor
-        case "temp":  return temperatureColor
+        case "usage": return customColors && customUsageColor ? customUsageColor : Kirigami.Theme.highlightColor
+        case "vram":  return customColors && customVramColor ? customVramColor : Kirigami.Theme.positiveTextColor
+        case "temp":  return customColors && customTemperatureColor ? customTemperatureColor : Kirigami.Theme.neutralTextColor
         }
         return Kirigami.Theme.textColor
     }

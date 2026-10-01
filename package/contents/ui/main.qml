@@ -3,12 +3,10 @@
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
-pragma ComponentBehavior: Bound
 import QtQuick
 
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
-import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id: root
@@ -23,11 +21,14 @@ PlasmoidItem {
         powerSysfsPath: Plasmoid.configuration.powerSysfsPath
     }
 
-    // Series colours: theme colours unless the user picked custom ones.
+    // Series colours are resolved inside the representations (theme colours unless
+    // custom ones are configured). Keep Kirigami.Theme off this root item: the
+    // Plasma Kirigami style syncs theme colours while the shell reparents the
+    // applet item, and bindings here crashed plasmashell at startup.
     readonly property bool customColors: Plasmoid.configuration.useCustomColors
-    readonly property color usageColor: customColors ? Plasmoid.configuration.usageColor : Kirigami.Theme.highlightColor
-    readonly property color vramColor: customColors ? Plasmoid.configuration.vramColor : Kirigami.Theme.positiveTextColor
-    readonly property color temperatureColor: customColors ? Plasmoid.configuration.temperatureColor : Kirigami.Theme.neutralTextColor
+    readonly property string customUsageColor: Plasmoid.configuration.usageColor
+    readonly property string customVramColor: Plasmoid.configuration.vramColor
+    readonly property string customTemperatureColor: Plasmoid.configuration.temperatureColor
     readonly property bool powerVisible: Plasmoid.configuration.showPower && gpu.powerAvailable
 
     // Desktop: always the full view. Panels: let Plasma pick the compact view;
@@ -44,9 +45,10 @@ PlasmoidItem {
         showTemperature: Plasmoid.configuration.showTemperature
         vramAsPercent: Plasmoid.configuration.vramAsPercent
         onActivated: root.expanded = !root.expanded
-        usageColor: root.usageColor
-        vramColor: root.vramColor
-        temperatureColor: root.temperatureColor
+        customColors: root.customColors
+        customUsageColor: root.customUsageColor
+        customVramColor: root.customVramColor
+        customTemperatureColor: root.customTemperatureColor
     }
 
     fullRepresentation: FullRepresentation {
@@ -56,10 +58,14 @@ PlasmoidItem {
         historySeconds: Plasmoid.configuration.historySeconds
         showHistory: Plasmoid.configuration.showHistory
         showPower: root.powerVisible
-        usageColor: root.usageColor
-        vramColor: root.vramColor
+        customColors: root.customColors
+        customUsageColor: root.customUsageColor
+        customVramColor: root.customVramColor
     }
 
+    // Own icon for the tooltip and the icon-only compact mode. The widget explorer
+    // resolves metadata.json "Icon" through the icon theme only, so that one stays
+    // a Breeze name (ksysguardd); the store listing uses store/icon.svg.
     Plasmoid.icon: "ksysguardd"
 
     toolTipMainText: gpu.displayName

@@ -119,6 +119,20 @@ package/                        the plasmoid (what gets installed)
 - Load generation for manual testing: `glmark2`, `vkmark`, or a game; watch VRAM with a browser.
 - Debug output: `journalctl --user -f -t plasmashell` (QML warnings land there).
 
+## Lessons
+
+- **Kirigami.Theme colour bindings on root items crash plasmashell at startup** (Plasma 6.7.5,
+  found 2026-10-01). `property color x: Kirigami.Theme.<colour>` on the `PlasmoidItem` root or on
+  the compact representation root segfaults inside KirigamiPlasmaStyle → `setPositiveTextColor`
+  while the shell reparents the applet (`setParentItem` → `refWindow`). plasmawindowed, the
+  harnesses and live "Add widget" do not reproduce it, only a shell start with the widget in a
+  panel. Reading `Kirigami.Theme.*` inside a function called from delegate bindings is fine.
+  Bisected with the development history; 0.1.1 carries the fix.
+- Test a shell restart with the widget in a panel before every release; `make upgrade` alone
+  keeps the old code running and hides startup problems.
+- `tools/CompactHarness.qml` hosts only the panel view on a plain `Window` (no Controls style
+  dependency) for quick checks.
+
 ## Risks / open points
 
 - **Index mapping**: `gpu0` in ksystemstats vs `card1` in DRM. Users with iGPU + dGPU may need to

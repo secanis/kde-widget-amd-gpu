@@ -3,6 +3,18 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow semver.
 
+## [0.1.1] - 2026-10-01
+
+### Fixed
+- plasmashell crashed at startup with the widget in a panel (segfault in Kirigami's Plasma
+  style while the shell reparents the applet item). Colour properties bound to `Kirigami.Theme`
+  on the applet and panel-view root items triggered it; colours are now resolved in a function,
+  as in the first working version. 0.1.0 is affected and should not be used.
+
+### Added
+- Own icon (graphics card with usage and VRAM bars) in the full view header and tooltip.
+- `store/` with the KDE Store description, logo and screenshots.
+
 ## [0.1.0] - 2026-10-01
 
 First release.

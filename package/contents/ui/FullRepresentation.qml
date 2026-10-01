@@ -7,7 +7,6 @@
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
-pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 
@@ -25,8 +24,11 @@ Item {
     property int historySeconds: 60
     property bool showHistory: true
     property bool showPower: false
-    property color usageColor: Kirigami.Theme.highlightColor
-    property color vramColor: Kirigami.Theme.positiveTextColor
+    property bool customColors: false
+    property string customUsageColor: ""
+    property string customVramColor: ""
+    readonly property color usageColor: customColors && customUsageColor ? customUsageColor : Kirigami.Theme.highlightColor
+    readonly property color vramColor: customColors && customVramColor ? customVramColor : Kirigami.Theme.positiveTextColor
     readonly property bool historyVisible: showHistory && gpu.available
     readonly property int historyPoints: Math.max(2, Math.round(historySeconds * 1000 / Math.max(250, updateInterval)))
 
@@ -50,11 +52,21 @@ Item {
         anchors.margins: Kirigami.Units.smallSpacing
         spacing: Kirigami.Units.smallSpacing
 
-        Kirigami.Heading {
+        RowLayout {
             Layout.fillWidth: true
-            level: 3
-            elide: Text.ElideRight
-            text: root.gpu.displayName
+            spacing: Kirigami.Units.smallSpacing
+
+            Kirigami.Icon {
+                source: Qt.resolvedUrl("../icons/amdgpumonitor.svg")
+                Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
+                Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
+            }
+            Kirigami.Heading {
+                Layout.fillWidth: true
+                level: 3
+                elide: Text.ElideRight
+                text: root.gpu.displayName
+            }
         }
 
         PlasmaComponents.Label {
