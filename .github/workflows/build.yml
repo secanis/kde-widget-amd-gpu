@@ -1,0 +1,93 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lint & package
+    runs-on: ubuntu-latest
+    # Arch ships current Plasma 6 / KF6, so qmllint can resolve the real KDE QML modules.
+    container:
+      image: archlinux:base
+    steps:
+      - name: Install toolchain and Plasma QML modules
+        run: |
+          pacman -Syu --noconfirm --needed \
+            git make zip python cmake \
+            qt6-declarative kpackage kirigami kcmutils kdeclarative \
+            plasma-workspace libksysguard kquickcharts
+
+      - uses: actions/checkout@v4
+
+      - name: Validate metadata and config schema
+        run: make check
+
+      - name: Tag must match package version
+        if: github.ref_type == 'tag'
+        run: |
+          version=$(python3 -c "import json;print(json.load(open('package/metadata.json'))['KPlugin']['Version'])")
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match metadata.json version ${version}"
+            exit 1
+          fi
+
+      - name: qmllint
+        run: make lint
+
+      - name: Verify package installs with kpackagetool6
+        run: make verify-install
+
+      - name: CMake install into a temporary prefix
+        run: |
+          cmake -B build-cmake -DCMAKE_INSTALL_PREFIX="$PWD/build-prefix" >/dev/null
+          cmake --install build-cmake >/dev/null
+          test -f build-prefix/share/plasma/plasmoids/*/metadata.json
+
+      - name: Build .plasmoid archive
+        run: make archive
+
+      - name: Read package id and version
+        id: meta
+        run: |
+          echo "id=$(python3 -c "import json;print(json.load(open('package/metadata.json'))['KPlugin']['Id'])")" >> "$GITHUB_OUTPUT"
+          echo "version=$(python3 -c "import json;print(json.load(open('package/metadata.json'))['KPlugin']['Version'])")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.id }}-${{ steps.meta.outputs.version }}
+          path: "*.plasmoid"
+          if-no-files-found: error
+
+  release:
+    name: GitHub release
+    if: github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create release and attach .plasmoid
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/*.plasmoid \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes

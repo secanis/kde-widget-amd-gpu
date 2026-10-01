@@ -1,0 +1,7 @@
+*.plasmoid
+*.kate-swp
+*~
+.DS_Store
+/build/
+/build-cmake/
+/build-prefix/

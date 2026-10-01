@@ -1,0 +1,25 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Matthias Baldi",
+                "Email": "matthias.baldi@secanis.ch"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Shows AMD GPU utilisation and VRAM usage in the panel or on the desktop",
+        "EnabledByDefault": true,
+        "FormFactors": [
+            "desktop"
+        ],
+        "Icon": "ksysguardd",
+        "Id": "ch.secanis.amdgpumonitor",
+        "License": "GPL-2.0-or-later",
+        "Name": "AMD GPU Monitor",
+        "Version": "0.1.0",
+        "Website": "https://secanis.ch"
+    },
+    "Keywords": "GPU;AMD;VRAM;Radeon;monitor;",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

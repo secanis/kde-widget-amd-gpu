@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+
+  <group name="General">
+    <!-- ksystemstats GPU index: sensor ids are gpu/gpu<N>/... (not the DRM card number);
+         -1 selects the gpu/all aggregate -->
+    <entry name="gpuIndex" type="Int">
+      <default>0</default>
+      <min>-1</min>
+      <max>15</max>
+    </entry>
+    <!-- Read power from sysfs when ksystemstats has no power value -->
+    <entry name="powerFallback" type="Bool">
+      <default>false</default>
+    </entry>
+    <!-- hwmon file to read (microwatts); empty = first amdgpu power1_average found -->
+    <entry name="powerSysfsPath" type="String">
+      <default></default>
+    </entry>
+    <!-- Sensor update rate limit in milliseconds -->
+    <entry name="updateInterval" type="Int">
+      <default>1000</default>
+      <min>250</min>
+      <max>10000</max>
+    </entry>
+    <entry name="showUsage" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showVram" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showTemperature" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="showPower" type="Bool">
+      <default>false</default>
+    </entry>
+    <!-- Panel style: 0 = labels + bars + values, 1 = bars only, 2 = labels + values, 3 = labels + bars -->
+    <entry name="compactStyle" type="Int">
+      <default>0</default>
+    </entry>
+    <!-- Top and bottom margin of the panel view in pixels -->
+    <entry name="verticalMargin" type="Int">
+      <default>2</default>
+      <min>0</min>
+      <max>12</max>
+    </entry>
+    <!-- Show VRAM as percent instead of GiB in the panel -->
+    <entry name="vramAsPercent" type="Bool">
+      <default>false</default>
+    </entry>
+    <!-- Colours: empty string means "use the theme colour" -->
+    <entry name="useCustomColors" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="usageColor" type="String">
+      <default>#3daee9</default>
+    </entry>
+    <entry name="vramColor" type="String">
+      <default>#27ae60</default>
+    </entry>
+    <entry name="temperatureColor" type="String">
+      <default>#f67400</default>
+    </entry>
+    <!-- Show the history graph in the full view -->
+    <entry name="showHistory" type="Bool">
+      <default>true</default>
+    </entry>
+    <!-- History graph length in the full view, seconds -->
+    <entry name="historySeconds" type="Int">
+      <default>60</default>
+      <min>10</min>
+      <max>600</max>
+    </entry>
+  </group>
+</kcfg>
