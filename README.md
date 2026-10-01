@@ -26,7 +26,14 @@ System Monitor widgets use, so no root access, no shell polling and no compilati
 - `ksystemstats` with its GPU plugin (part of Plasma; present on any standard Plasma install)
 - An AMD GPU using the `amdgpu` kernel driver
 
-## Install (user-local)
+## Install from the KDE Store
+
+Right-click the panel or desktop → *Add Widgets…* → *Get New Widgets…* and search for
+"AMD GPU Monitor", or browse the listing at
+https://www.opendesktop.org/u/matthiasbaldi/products. Release archives are also attached to
+the [GitHub releases](https://github.com/secanis/kde-widget-amd-gpu/releases).
+
+## Install (user-local, from source)
 
 ```sh
 make install      # first time
